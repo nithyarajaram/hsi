@@ -1,0 +1,6 @@
+<% @posts.each do |post| %>
+  <div>
+    <%= link_to "#{post.title}", "http://#{post.url}" %>
+  </div>
+<% end%>
+

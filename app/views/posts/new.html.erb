@@ -1,0 +1,22 @@
+<%= form_for @post do |f| %>
+ 
+  <%= f.label :title, 'Title' %>:<br/>
+  <%= f.text_field :title %><br />
+  
+  <%= f.label :url, 'Url' %>:<br/>
+  <%= f.text_field :url %><br />
+
+  or <br/>
+
+  <%= f.label :text, 'Text' %><br/>
+  <%= f.text_area :text %><br/>
+
+  <%= f.submit %><br/></br>
+
+  <div> 
+   Leave url blank to submit a question for discussion. If there is no url, the text (if any) will appear at the top of the comments page. If there is a url, the text will   be ignored.
+  <div/>
+
+<% end %>
+
+

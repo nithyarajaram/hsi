@@ -1,0 +1,27 @@
+<h4>
+<%= link_to "Submit", new_post_path %>
+</h4>
+  
+<% @posts.each do |post| %>
+    
+  <% if post.url.empty? %>
+
+    <div>
+      <%= link_to post.title, post_path(post) %>
+    </div>
+  
+  <% else %>
+    
+    <div>
+      <%= link_to post.title, "http://#{post.url}" %>
+    </div>
+  
+  <% end %>
+  
+  posted <%=time_ago_in_words(post.created_at)%> ago | by <%=post.user.email %> |
+  <%=  link_to "discuss", post_path(post)%>
+
+  <br/>
+  <br/> 
+
+<% end %>
