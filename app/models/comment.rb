@@ -1,6 +1,6 @@
 class Comment < ActiveRecord::Base
   
-  attr_accessible :comment, :in_reply_to
+  attr_accessible :comment, :in_reply_to, :post_id, :user_id
 
   belongs_to :user
   

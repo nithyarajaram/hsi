@@ -6,6 +6,9 @@
       %meta{:content => content_for?(:description) ? yield(:description) : "Hsi", :name => "description"}
         = stylesheet_link_tag "application", :media => "all"
         = javascript_include_tag "application"
+        = javascript_include_tag  "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
+        = javascript_include_tag  "http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"
+        = javascript_include_tag "jquery-rails.js"
         = csrf_meta_tags
         = yield(:head)
   %body

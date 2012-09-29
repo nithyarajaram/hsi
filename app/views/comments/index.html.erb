@@ -1,0 +1,18 @@
+<div>
+  <span id="comments_Count"><%= pluralize(@comments.count, "Comment")%></span>
+</div>
+<br/>
+<br/>
+<div id = "comments">
+  <%= render :partial => @comments%>
+</div>
+
+
+<div id = "comment-notice"></div>
+ <%= form_for ([Comment.new, @post]), :remote => true do |f| %>
+   <%= f.text_area :comment, :rows => 8 %><br />
+   <%= f.hidden_field :post_id, :value => "#{@post.id}" %>
+  <%= f.submit "Add comment" %>
+<% end %>
+
+

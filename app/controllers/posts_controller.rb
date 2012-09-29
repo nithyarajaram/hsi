@@ -9,8 +9,7 @@ class PostsController < ApplicationController
   def create
     @post = Post.new(params[:post])
     @post.user_id = current_user.id
-    @post.text = nil if @post.url.nil?
-
+    @post.text = nil unless @post.url.nil?
 
     if @post.save
       redirect_to :root
@@ -26,6 +25,17 @@ class PostsController < ApplicationController
 
   def show
     @post = Post.find(params[:id])
+    @comments = @post.comments
+    @post.user = current_user
   end
 
+  def edit
   end
+
+  def update
+  end
+
+  def destroy
+  end
+
+end
