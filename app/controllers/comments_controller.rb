@@ -1,4 +1,6 @@
 class CommentsController < ApplicationController
+  before_filter :authenticate_user!, :except => [:show]
+  
   def new
     @comment = Comment.new
   end
@@ -6,21 +8,14 @@ class CommentsController < ApplicationController
   def create
     @comment = Comment.new(params[:comment])
     @comment.user_id = current_user.id
-    #@comment.post_id = @post.id
     @comment.save
-
-    respond_to do |format|
-      format.html { redirect_to comments_path }
-      format.js
+    redirect_to post_path(@comment.post)
     end
-  end
+  
 
   def index
     @comments = Comment.all
     @comment.user = current_user
-    respond_to do |format|
-      format.html
-    end
   end
 
   def show
@@ -28,12 +23,34 @@ class CommentsController < ApplicationController
     @comment.user = current_user
   end
 
-  def destroy
-    @comment = Comment.find(params[:id])
-    @comment.destroy
-    respond_to do |format|
-      format.html { redirect_to comments_path }
-      format.js
+  def new_reply
+  @parent_comment = Comment.find(params[:id])
+  @reply = Comment.new(:in_reply_to => @parent_comment.id)
+  
+  end
+
+  def create_reply
+    @reply = Comment.new(params[:reply])
+    @parent_comment = Comment.find(params[:in_reply_to])
+    if @reply.save
+      flash[:notice] = "Reply posted"
+      redirect_to post_path(@parent_comment.post)
     end
   end
+
+  def destroy
+    @comment = Comment.find(params[:id])
+    @post = @comment.post
+    if current_user.id == @comment.user_id  
+    @comment.destroy
+    redirect_to post_path(@post)
+    else
+      flash[:notice] = "You don't have permission to delete"
+      redirect_to post_path(@post)
+    end
+  end
+
+   
 end
+  
+

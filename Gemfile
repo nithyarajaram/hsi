@@ -23,3 +23,4 @@ gem "devise", ">= 2.1.2"
 gem "hub", ">= 1.10.2", :require => nil, :group => [:development]
 gem "mocha", :require => false
 gem "shoulda", :group => :test
+gem "acts_as_tree", "~> 1.1.0"

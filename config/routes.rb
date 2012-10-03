@@ -6,5 +6,9 @@ Hsi::Application.routes.draw do
   devise_for :users
   resources :users, :only => [:show, :index]
   resources :posts
-  resources :comments
+  resources :comments do
+    get 'new_reply', :on => :member 
+    post 'create_reply', :on => :member
+  end
 end
+

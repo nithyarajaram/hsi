@@ -4,7 +4,7 @@
 <br/>
 <br/>
 <div id = "comments">
-  <%= render :partial => @comments%>
+  <%= render :partial => @comments, :object => Comment.find(params[:id])%>
 </div>
 
 

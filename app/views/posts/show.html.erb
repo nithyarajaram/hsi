@@ -1,24 +1,26 @@
 <div>
-<%= @post.title %> 
-<%= "(#{@post.url})" unless @post.url.nil? %><br/>
-
-<%= @post.text unless @post.text.nil? %>
+  <%= @post.title %> 
+  <%= "(#{@post.url})" unless @post.url.nil? %><br/>
+  <%= @post.text unless @post.text.nil? %>
 </div>
+
 <br />
 <br />
+
 <div>
-<%= form_for ([Comment.new]), :remote => true do |f| %>
+  <%= form_for ([Comment.new]) do |f| %>
   <%= f.text_area :comment, :rows => 8 %><br />
   <%= f.hidden_field :post_id, :value => @post.id %>
   <%= f.submit "Add comment" %>
 <% end %>
 </div>
+
 <br />
 
-<span id="comments_Count"><%= pluralize(@comments.count, "Comment")%></span>
-<div id = "comments">
-  <%= render :partial => @comments%>
-</div>
+<span id="comments_Count"><%= pluralize(@post.comments.count, "Comment")%></span>
 
+<div id = "comments">
+  <%= render :partial => @post.comments%>
+</div>
 
 
