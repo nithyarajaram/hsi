@@ -20,7 +20,13 @@
 <span id="comments_Count"><%= pluralize(@post.comments.count, "Comment")%></span>
 
 <div id = "comments">
-  <%= render :partial => @post.comments%>
+  <%= div_for @post.comments do |comment| %>
+    <% if comment.in_reply_to.nil? && comment.replies.empty? %>
+    <%= render :partial => 'comments/comment', :object => comment %>
+  <% elsif !comment.replies.empty? %>
+      <%= render :partial => 'comments/reply', :collection => comment.replies%>
+  <% end %>
+<% end %>
 </div>
 
 

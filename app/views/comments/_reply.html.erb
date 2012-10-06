@@ -1,0 +1,13 @@
+ <span class="dateandoptions">
+    Posted <%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.email %> |
+    <%= link_to 'Delete', reply, :method => :delete %>
+    </span>
+<div>
+----------<%=reply.comment%>-----------
+</div>
+<%= link_to "reply", new_reply_comment_path(reply) %>
+  <br/>
+  
+<br/>
+  
+ 

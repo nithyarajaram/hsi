@@ -1,21 +1,17 @@
-<%= div_for comment do %>
-  
-  <% if comment.in_reply_to.nil? %>
-    <span class="dateandoptions">
-    Posted <%= time_ago_in_words(comment.created_at)%> ago | By <%= comment.user.email %> |
-    <%= link_to 'Delete', comment, :confirm => "Are you sure?", :method => :delete %>
-    </span>
-    <%= content_tag(:p, comment.comment, :class => "comment_body") %>
-  <% else%>
-    <span class="dateandoptions">
+  <span class="dateandoptions">
     Posted <%= time_ago_in_words(comment.created_at)%> ago | By <%= comment.user.email %> |
     <%= link_to 'Delete', comment, :method => :delete %>
-    </span>
+  </span> 
+
+  <div>
     <%= comment.comment %>
-  <% end %>
+
+  </div>
+
+  <div>
+    <%= link_to "reply", new_reply_comment_path(comment) %>
+  </div>
+  <br/>
+  <br/>
   
-  <%= link_to "reply", new_reply_comment_path(comment) %>
-  <br/>
-  <br/>
-<% end %>
  

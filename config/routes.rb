@@ -9,6 +9,7 @@ Hsi::Application.routes.draw do
   resources :comments do
     get 'new_reply', :on => :member 
     post 'create_reply', :on => :member
+    get 'replies', :on => :member
   end
 end
 
