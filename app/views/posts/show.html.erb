@@ -24,6 +24,7 @@
     <% if comment.in_reply_to.nil? && comment.replies.empty? %>
     <%= render :partial => 'comments/comment', :object => comment %>
   <% elsif !comment.replies.empty? %>
+      <%= render :partial => 'comments/comment', :object => comment %>
       <%= render :partial => 'comments/reply', :collection => comment.replies%>
   <% end %>
 <% end %>
