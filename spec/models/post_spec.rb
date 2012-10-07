@@ -9,6 +9,15 @@ describe Post do
     it "should not accept both title and url" do
       FactoryGirl.build(:post, :url => "someurl", :text => "some text").should_not be_valid
     end
+
+    it "should not accept both title and url" do
+      FactoryGirl.build(:post, :url => "someurl", :text => "").should be_valid
+    end
+  
+    it "should not accept both title and url" do
+      FactoryGirl.build(:post, :url => "", :text => "some text").should be_valid
+    end
+
   end
 
   describe "recent posts" do

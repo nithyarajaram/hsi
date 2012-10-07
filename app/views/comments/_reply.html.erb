@@ -1,13 +1,31 @@
- <span class="dateandoptions">
-    Posted <%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.email %> |
-    <%= link_to 'Delete', reply, :method => :delete %>
-    </span>
-<div>
-----------<%=reply.comment%>-----------
-</div>
-<%= link_to "reply", new_reply_comment_path(reply) %>
+<style>
+  #test { text-indent: 30px; }
+  #inner{ text-indent: 60px; }
+</style>
+
+<% if defined?(wrap_in) && !wrap_in.blank? %>
+  <%= content_tag wrap_in do %>
+    <div id = "inner"> 
+      Posted <%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.email %> |
+      <%= link_to 'Delete', reply, :method => :delete %><br/>
+      <div id = "inner"><%=reply.comment%></div>
+      <div id = "inner"><%= link_to "reply", new_reply_comment_path(reply) %></div>
+      <br/>
+    </div>
+  <% end %>
+<% else %>
+<div id = "test"> 
+  Posted <%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.email %> |
+  <%= link_to 'Delete', reply, :method => :delete %><br/>
+  <div id = "test"><%=reply.comment%></div>
+  <div id = "test"><%= link_to "reply", new_reply_comment_path(reply) %></div>
   <br/>
-  
+</div>
+<% end %>
+
+
+<% if !reply.replies.empty? %>
+  <div id = "inner"><%= render :partial => "comments/reply", :collection => reply.replies, :locals => { :wrap_in => :div} %></div>
+<% end %>
 <br/>
-  
  

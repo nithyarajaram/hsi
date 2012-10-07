@@ -9,7 +9,7 @@ class PostsController < ApplicationController
   def create
     @post = Post.new(params[:post])
     @post.user_id = current_user.id
-    @post.text = nil unless @post.url.nil?
+    @post.text = nil unless @post.url.empty?
 
     if @post.save
       redirect_to :root

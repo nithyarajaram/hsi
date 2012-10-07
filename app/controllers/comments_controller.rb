@@ -8,14 +8,17 @@ class CommentsController < ApplicationController
   def create
     @comment = Comment.new(params[:comment])
     @comment.user_id = current_user.id
-    @comment.save
-    redirect_to post_path(@comment.post)
+    if @comment.save
+      redirect_to post_path(@comment.post)
+    else
+      flash[:notice] = "Something went wrong. Please try again"
+      redirect_to post_path(@comment.post)
     end
+  end
   
 
   def index
     @comments = Comment.all
-    #@comment.user = current_user
   end
 
   def show

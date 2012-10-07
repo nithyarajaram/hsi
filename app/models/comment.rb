@@ -13,6 +13,8 @@ class Comment < ActiveRecord::Base
   
   belongs_to :parent_comment, :class_name => 'Comment'
 
+  scope :parent_comments, :conditions => {:in_reply_to => nil}
+
 
                               
 end

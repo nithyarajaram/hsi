@@ -4,30 +4,40 @@
   <%= @post.text unless @post.text.nil? %>
 </div>
 
-<br />
-<br />
+<br/>
+<br/>
 
 <div>
   <%= form_for ([Comment.new]) do |f| %>
-  <%= f.text_area :comment, :rows => 8 %><br />
-  <%= f.hidden_field :post_id, :value => @post.id %>
-  <%= f.submit "Add comment" %>
+    <%= f.text_area :comment, :rows => 8 %><br />
+    <%= f.hidden_field :post_id, :value => @post.id %>
+    <%= f.submit "Add comment" %>
 <% end %>
 </div>
 
-<br />
+<br/>
 
-<span id="comments_Count"><%= pluralize(@post.comments.count, "Comment")%></span>
+<div>
+  <span><%= pluralize(@post.comments.count, "Comment")%></span>
+</div>
 
-<div id = "comments">
-  <%= div_for @post.comments do |comment| %>
-    <% if comment.in_reply_to.nil? && comment.replies.empty? %>
-    <%= render :partial => 'comments/comment', :object => comment %>
-  <% elsif !comment.replies.empty? %>
-      <%= render :partial => 'comments/comment', :object => comment %>
-      <%= render :partial => 'comments/reply', :collection => comment.replies%>
+<br/>
+
+<div>
+  <%= div_for @post.comments.parent_comments do |comment| %>
+    <% if comment.replies.empty? %>
+      <div>
+        <%= render :partial => 'comments/comment', :object => comment %>
+      </div>
+      <br/>
+    <% else%>
+      <div>
+        <%= render :partial => 'comments/comment', :object => comment %>
+        <%= render :partial => 'comments/reply', :collection=> comment.replies%>
+        <br/>
+      </div>
+    <% end %>
   <% end %>
-<% end %>
 </div>
 
 
