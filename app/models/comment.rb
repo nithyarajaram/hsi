@@ -18,6 +18,21 @@ class Comment < ActiveRecord::Base
 
   validates_presence_of :comment
 
+  def parent_comment?
+    self.in_reply_to == nil
+  end
+
+  def self.get_indentation
+    indentation = 0
+    if self.parent_comment?
+      indentation 
+    elsif Comment.find(self.in_reply_to).parent_comment?	
+      indentation = indentation + 5
+    else
+      indentation = get_indentation(self.in_reply_to) + 5
+    end
+  end
+
 
                               
 end

@@ -1,6 +1,6 @@
   <span>
-    Posted <%= time_ago_in_words(comment.created_at)%> ago | By <%= comment.user.email %> |
-    <%= link_to 'Delete', comment, :method => :delete %>
+    <em>Posted <%= time_ago_in_words(comment.created_at)%> ago | By <%= comment.user.email %> |
+      <%= link_to 'Delete', comment, :method => :delete %></em>
   </span> 
 
   <div>

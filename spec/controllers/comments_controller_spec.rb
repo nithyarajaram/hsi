@@ -37,7 +37,7 @@ describe CommentsController do
 
   describe "deleting a comment" do
     it "should redirect to the same post after successful deletion" do
-      delete 'delete', :comment => @comment
+      delete :destroy, :comment => @comment
     end
   end
 end

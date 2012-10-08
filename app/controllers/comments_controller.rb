@@ -41,6 +41,17 @@ class CommentsController < ApplicationController
       redirect_to post_path(@post)
     end
   end
+if false
+  def get_indentation(comment, indentation = 0)
+    if comment.in_reply_to.empty?
+      indentation
+    elsif Comment.find(comment.in_reply_to).parent_comment?	
+      indentation = indentation + 5
+    else
+      indentation = get_indentation(Comment.find(comment.in_reply_to)) + 5
+    end
+  end
+end
 
 end
   
