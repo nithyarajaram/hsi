@@ -3,36 +3,34 @@
   #inner{ text-indent: 60px; }
 </style>
 <% if defined?(wrap_in) && !wrap_in.blank? %>
-  
   <%= content_tag wrap_in do %>
     <div id = "inner"> 
       <% get_indentation(reply).times do%>&nbsp;<% end %> 
       <em>Posted<%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.email %> |
         <%= link_to 'Delete', reply, :method => :delete %></em><br/>
-      <div  id = "inner">
-      <% get_indentation(reply).times do%>&nbsp;<% end %> 
-        <%= reply.comment %>
-      </div>
-      <% get_indentation(reply).times do%>&nbsp;<% end %> 
-       <div  id = "inner">
-      <% get_indentation(reply).times do%>&nbsp;<% end %> 
-       <%= link_to "reply", new_reply_comment_path(reply) %></div>
-      <br/>
     </div>
-  <% end %>
+    <div  id = "inner">
+      <% get_indentation(reply).times do%>&nbsp;<% end %> 
+      <%= reply.comment %>
+    </div>
+    <div  id = "inner">
+      <% get_indentation(reply).times do%>&nbsp;<% end %> 
+      <% get_indentation(reply).times do%>&nbsp;<% end %> 
+      <%= link_to "reply", new_reply_comment_path(reply) %>
+    </div>
+    <br/>
+   <% end %>
 <% else %>
-<div id = "test"> 
-  <em>Posted <%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.email %> |
+  <div id = "test"> 
+    <em>Posted <%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.email %> |
     <%= link_to 'Delete', reply, :method => :delete %></em><br/>
-  <div id = "test"><%=reply.comment%></div>
-  <div id = "test"><%= link_to "reply", new_reply_comment_path(reply) %></div>
-  <br/>
-</div>
+    <div id = "test"><%=reply.comment%></div>
+    <div id = "test"><%= link_to "reply", new_reply_comment_path(reply) %></div>
+    <br/>
+  </div>
 <% end %>
 
 <% if !reply.replies.empty? %>
-  <% @depth = reply.replies.count %>
   <div><%= render :partial => "comments/reply", :collection => reply.replies, :locals => { :wrap_in => :div} %></div>
 <% end %>
-<br/>
  
