@@ -32,17 +32,6 @@ class CommentsController < ApplicationController
   
   end
 
-  def create_reply
-    @reply = Comment.new(params[:reply])
-    @parent_comment = Comment.find(params[:in_reply_to])
-    @post = @parent_comment.post
-    @reply.post_id = @post.id
-    if @reply.save
-      flash[:notice] = "Reply posted"
-      redirect_to post_path(@post)
-    end
-  end
-
   def destroy
     @comment = Comment.find(params[:id])
     @post = @comment.post
@@ -55,12 +44,6 @@ class CommentsController < ApplicationController
     end
   end
 
-  def replies
-    @comment = Comment.find(params[:id])
-    @replies = @comment.replies
-  end
-
-   
 end
   
 

@@ -5,6 +5,7 @@ describe CommentsController do
     @user = FactoryGirl.create(:user)
     @post = FactoryGirl.create(:post)
     @comment = FactoryGirl.create(:comment, :user_id => @user.id, :post_id => @post.id)
+    
     controller.stubs(:current_user).returns(@user)
     controller.stubs(:authenticate_user!).returns(true)
   end
@@ -32,10 +33,14 @@ describe CommentsController do
       post 'create', :comment => {:comment => "Some comment", :post_id => @post.id}
       assigns[:comment].comment.should == "Some comment"
     end
-end
+  end
 
- 
+  describe "deleting a comment" do
+    it "should redirect to the same post after successful deletion" do
+      delete 'delete', :comment => @comment
     end
-
-
+  end
 end
+
+
+
