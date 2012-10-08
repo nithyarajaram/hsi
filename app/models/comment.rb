@@ -16,6 +16,7 @@ class Comment < ActiveRecord::Base
 
   scope :parent_comments, :conditions => {:in_reply_to => nil}
 
+  validates_presence_of :comment
 
 
                               

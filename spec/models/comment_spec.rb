@@ -5,6 +5,7 @@ describe Comment do
   it { should belong_to(:post) }
   it { should have_many(:replies) }
   it { should belong_to(:parent_comment) }
+  it { should validate_presence_of(:comment)}
 end
 
 describe "parent comments" do

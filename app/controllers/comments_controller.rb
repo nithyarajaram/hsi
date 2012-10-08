@@ -15,7 +15,6 @@ class CommentsController < ApplicationController
       redirect_to post_path(@comment.post)
     end
   end
-  
 
   def index
     @comments = Comment.all
@@ -29,7 +28,6 @@ class CommentsController < ApplicationController
   def new_reply
   @parent_comment = Comment.find(params[:id])
   @reply = Comment.new(:in_reply_to => @parent_comment.id, :post_id => @parent_comment.post_id)
-  
   end
 
   def destroy
