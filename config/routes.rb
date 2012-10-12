@@ -11,5 +11,6 @@ Hsi::Application.routes.draw do
     post 'create_reply', :on => :member
     delete 'reply', :on => :member
   end
+  resources :upvotes
 end
 

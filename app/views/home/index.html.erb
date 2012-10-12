@@ -7,19 +7,24 @@
   <% if post.url.empty? %>
 
     <div>
+      <%= button_to "^", :action => :create, :controller => :upvotes, :method => 'post', :upvotable_id => post.id, :upvotable_type => post.class.to_s, :url => request.url %>
       <%= link_to post.title, post_path(post) %>
-    </div>
-  
+  </div> 
+
   <% else %>
     
     <div>
+      <%= button_to "^", :action => :create, :controller => :upvotes, :method => 'post', :upvotable_id => post.id, :upvotable_type => post.class.to_s, :url => request.url %>
       <%= link_to post.title, "#{post.url}" %>
+    
     </div>
   
   <% end %>
-  
-  posted <%=time_ago_in_words(post.created_at)%> ago | by <%=post.user.email %> |
-  <%=  link_to "discuss", post_path(post)%>
+  <% if !post.upvotes.empty? %>
+    <%= pluralize(post.upvotes.count, "point") %> |
+  <% end %>
+  <em>posted <%=time_ago_in_words(post.created_at)%> ago | by <%=post.user.email %> |
+    <%=  link_to "discuss", post_path(post)%></em>
 
   <br/>
   <br/> 

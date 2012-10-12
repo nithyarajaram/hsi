@@ -7,6 +7,8 @@ class Comment < ActiveRecord::Base
   
   belongs_to :post
 
+  has_many :upvotes, :as => :upvotable
+
   has_many :replies, :class_name => 'Comment',
                      :foreign_key => 'in_reply_to'
   
