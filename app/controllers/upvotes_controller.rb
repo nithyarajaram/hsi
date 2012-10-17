@@ -10,7 +10,12 @@ class UpvotesController < ApplicationController
     @upvote.user_id = @user.id
     @upvote.user_ip = @user.last_sign_in_ip
     @upvote.save
-    redirect_to params[:url]
+
+    respond_to do |format|
+      format.html { redirect_to params[:url]}
+      format.js
+    end
+
   end 
 
 end
