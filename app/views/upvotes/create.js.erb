@@ -1,5 +1,17 @@
 
-/* Update the count of comments */
+<% if @upvote.upvotable_type == 'Post' %>
+
+/* Update the count of votes for posts */
 $('#<%= @upvote.upvotable_id %>').html('<%=pluralize(Post.find(@upvote.upvotable_id).upvotes.count, "point") %>');
+
+<% else %>
+
+  /* Update the count of votes for comments */
+  $('#<%= @upvote.upvotable_id %>').html('<%=pluralize(Comment.find(@upvote.upvotable_id).upvotes.count, "point") %>');
+
+<% end %>
+
+
+
 
 

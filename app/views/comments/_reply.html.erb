@@ -9,7 +9,8 @@
       <% get_indentation(reply).times do%>&nbsp;<% end %>
 
       <% if !reply.upvotes.empty? %>
-        <%= pluralize(reply.upvotes.count, "point") %> |
+        <span id = "<%="#{reply.id}"%>">
+          <%= pluralize(reply.upvotes.count, "point") %> | </span>
       <% end %> 
 
       <em>Posted<%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.email %> |
@@ -18,9 +19,10 @@
     
     <div  id = "inner">
       <% get_indentation(reply).times do%>&nbsp;<%end%>
-      <%= button_to "^", :action => :create, :controller => :upvotes, 
+      <%= button_to "^", {:action => :create, :controller => :upvotes, 
                          :method => :post, :upvotable_id => reply.id, 
-                         :upvotable_type => reply.class.to_s, :url => request.url %>
+                         :upvotable_type => reply.class.to_s, :url => request.url},
+                         :remote => true %>
     </div>
  
     <div  id = "inner">
@@ -36,15 +38,17 @@
 
    <% end %>
 <% else %>
-  <div id = "test">
-   <% if !reply.upvotes.empty? %>
-        <%= pluralize(reply.upvotes.count, "point") %> |
+  <div id = "outer">
+    <% if !reply.upvotes.empty? %>
+       <span id = "<%="#{reply.id}"%>">
+        <%= pluralize(reply.upvotes.count, "point") %> | </span>
       <% end %> 
     <em>Posted <%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.email %> |
       <%= link_to 'Delete', reply, :method => :delete %></em><br/>
-    <%= button_to "^", :action => :create, :controller => :upvotes, 
+    <%= button_to "^", {:action => :create, :controller => :upvotes, 
                        :method => :post, :upvotable_id => reply.id, 
-                       :upvotable_type => reply.class.to_s, :url => request.url %>
+                       :upvotable_type => reply.class.to_s, :url => request.url},
+                       :remove => true %>
 
     <div id = "outer"><%=reply.comment%></div>
     <div id = "outer"><%= link_to "reply", new_reply_comment_path(reply) %></div>

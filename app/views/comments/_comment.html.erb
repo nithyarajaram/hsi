@@ -1,6 +1,8 @@
 <div>
    <% if !comment.upvotes.empty? %>
-    <%= pluralize(comment.upvotes.count, "point") %> |
+     <span id = "<%="#{comment.id}"%>">
+       
+       <%= pluralize(comment.upvotes.count, "point") %> | </span>
    <% end %>
 
     <em>Posted <%= time_ago_in_words(comment.created_at)%> ago | By <%= comment.user.email %> |
@@ -8,7 +10,7 @@
   </div> 
 
   <div>
-    <%= button_to "^", :action => :create, :controller => :upvotes, :method => :post, :upvotable_id => comment.id, :upvotable_type => comment.class.to_s, :url => request.url %>
+    <%= button_to "^", {:action => :create, :controller => :upvotes, :method => :post, :upvotable_id => comment.id, :upvotable_type => comment.class.to_s, :url => request.url}, :remote => true %>
     <%= comment.comment %>
   </div>
 
