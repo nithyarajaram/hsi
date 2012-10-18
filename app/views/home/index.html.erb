@@ -7,14 +7,14 @@
   <% if post.url.empty? %>
 
     <div>
-      <%= button_to "upvote", {:action => :create, :controller => :upvotes, :method => 'post', :upvotable_id => post.id, :upvotable_type => post.class.to_s, :url => request.url}, :remote => true %>    
+      <%= button_to "^", {:action => :create, :controller => :upvotes, :method => 'post', :upvotable_id => post.id, :upvotable_type => post.class.to_s, :url => request.url}, :remote => true %>    
       <%= link_to post.title, post_path(post) %>
   </div> 
 
   <% else %>
     
     <div>
-      <%= button_to "upvote", {:action => :create, :controller => :upvotes, :method => 'post', :upvotable_id => post.id, :upvotable_type => post.class.to_s, :url => request.url}, :remote => true %><%= link_to post.title, "#{post.url}" %>
+      <%= button_to "^", {:action => :create, :controller => :upvotes, :method => 'post', :upvotable_id => post.id, :upvotable_type => post.class.to_s, :url => request.url}, :remote => true %><%= link_to post.title, "#{post.url}" %>
     
     </div>
   
