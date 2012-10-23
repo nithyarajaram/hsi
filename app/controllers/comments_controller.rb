@@ -17,7 +17,7 @@ class CommentsController < ApplicationController
   end
 
   def index
-    @comments = Comment.all
+    @comments = Comment.recent_comments
   end
 
   def show

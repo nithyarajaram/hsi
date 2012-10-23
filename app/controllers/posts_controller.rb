@@ -20,7 +20,7 @@ class PostsController < ApplicationController
   end
 
   def index
-    @posts = Post.find(:all)
+    @posts = Post.recent_posts
   end
 
   def show

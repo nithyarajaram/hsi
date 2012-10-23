@@ -17,6 +17,7 @@ class Comment < ActiveRecord::Base
                             
 
   scope :parent_comments, :conditions => {:in_reply_to => nil}
+  scope :recent_comments, order('created_at DESC')
 
   validates_presence_of :comment
 

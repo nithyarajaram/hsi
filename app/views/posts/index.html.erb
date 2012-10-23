@@ -1,6 +1,30 @@
-<% @posts.each do |post| %>
-  <div>
-    <%= link_to "#{post.title}", "http://#{post.url}" %>
-  </div>
-<% end%>
 
+<%  @posts.each do |post| %>
+    
+  <% if post.url.empty? %>
+
+    <div>
+      <%= button_to "^", {:action => :create, :controller => :upvotes, :method => 'post', :upvotable_id => post.id, :upvotable_type => post.class.to_s, :url => request.url}, :remote => true %>    
+      <%= link_to post.title, post_path(post) %>
+  </div> 
+
+  <% else %>
+    
+    <div>
+      <%= button_to "^", {:action => :create, :controller => :upvotes, :method => 'post', :upvotable_id => post.id, :upvotable_type => post.class.to_s, :url => request.url}, :remote => true %><%= link_to post.title, "#{post.url}" %>
+    
+    </div>
+  
+  <% end %>
+  <% if !post.upvotes.empty? %>
+    <div id = "<%= "#{post.id}" %>">
+      <%= pluralize(post.upvotes.count, "point") %> |
+    </div>
+  <% end %>
+  <em>posted <%=time_ago_in_words(post.created_at)%> ago | by <%=post.user.email %> |
+    <%=  link_to "discuss", post_path(post)%></em>
+
+  <br/>
+  <br/>
+                  
+<% end %>

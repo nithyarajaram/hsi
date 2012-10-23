@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121011114124) do
+ActiveRecord::Schema.define(:version => 20121021022028) do
 
   create_table "comments", :force => true do |t|
     t.text     "comment"
@@ -22,6 +22,12 @@ ActiveRecord::Schema.define(:version => 20121011114124) do
     t.integer  "post_id"
   end
 
+  create_table "karmas", :force => true do |t|
+    t.integer  "karma"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "posts", :force => true do |t|
     t.string   "title"
     t.string   "url"
@@ -29,6 +35,23 @@ ActiveRecord::Schema.define(:version => 20121011114124) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.integer  "user_id"
+  end
+
+  create_table "up_vote_counters", :force => true do |t|
+    t.integer  "upvote_counter", :default => 0
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+    t.integer  "post_id"
+    t.integer  "comment_id"
+  end
+
+  create_table "up_votes", :force => true do |t|
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+    t.integer  "user_id"
+    t.string   "user_ip"
+    t.integer  "upvotable_id"
+    t.string   "upvotable_type"
   end
 
   create_table "upvotes", :force => true do |t|
@@ -55,6 +78,7 @@ ActiveRecord::Schema.define(:version => 20121011114124) do
     t.string   "name"
     t.string   "email"
     t.string   "username"
+    t.integer  "karma"
   end
 
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
