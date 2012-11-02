@@ -7,27 +7,55 @@
   <% if post.url.empty? %>
 
     <div>
-      <%= button_to "^", {:action => :create, :controller => :upvotes, :method => 'post', :upvotable_id => post.id, :upvotable_type => post.class.to_s, :url => request.url}, :remote => true %>    
+      <img id="<%= "#{post.id}" %>" src="assets/arrow_17.gif" /></img>
       <%= link_to post.title, post_path(post) %>
-  </div> 
+    </div> 
+
 
   <% else %>
     
     <div>
-      <%= button_to "^", {:action => :create, :controller => :upvotes, :method => 'post', :upvotable_id => post.id, :upvotable_type => post.class.to_s, :url => request.url}, :remote => true %><%= link_to post.title, "#{post.url}" %>
-    
+
+      <img id="<%= "#{post.id}" %>" src="assets/arrow_17.gif" /></img>
+      <%= link_to post.title, "#{post.url}" %>
+         
     </div>
   
   <% end %>
   <% if !post.upvotes.empty? %>
-    <div id = "<%= "#{post.id}" %>">
-      <%= pluralize(post.upvotes.count, "point") %> |
-    </div>
-  <% end %>
-  <em>posted <%=time_ago_in_words(post.created_at)%> ago | by <%=post.user.email %> |
-    <%=  link_to "discuss", post_path(post)%></em>
+    <div>
+      <span class = "points" id = "<%= "#{post.id}"%>points"> 
+        <%= pluralize(post.upvotes.count, "point") %> | </span>
+       <em>posted <%=time_ago_in_words(post.created_at)%> ago | by <%=post.user.email %> |
+         <%=  link_to "discuss", post_path(post)%></em>
+     </div>
 
+  <% end %>
+ 
   <br/>
   <br/>
-                  
+
+
+
 <% end %>
+
+<script>
+  $('img').click(function(e){
+    e.preventDefault();
+    $div = $(this).attr('id');
+    $.ajax({
+        context: this,
+        type: "POST",
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        url: "/upvotes",
+        cache: false,
+        data: {upvotable_id: $div, upvotable_type: "Post", url: "/"},
+        success: function(json){
+        $('span#'+ $div +'points').text(json + ' points |');
+      }
+    });
+  });
+</script>
+
+
+
