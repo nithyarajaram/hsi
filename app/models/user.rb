@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :username, :password, :password_confirmation, :remember_me
+  attr_accessible :name, :email, :username, :password, :password_confirmation, :remember_me, :karma
 
   has_many :posts, :dependent => :destroy
   has_many :comments, :dependent => :destroy
@@ -17,6 +17,13 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :username 
   validates_presence_of :password
   validates_presence_of :password_confirmation
+  before_create :set_karma
+  scope :leader_board, order('karma DESC')
+
+  
+  def set_karma
+    self.karma = 1
+  end
 
  
 end

@@ -1,7 +1,11 @@
 <h4>
-<%= link_to "Submit", new_post_path %>
+  <%= link_to "Submit", new_post_path %>
+  <%= link_to "Leaders", users_path %>
+  <%= link_to "New", posts_path %>
+  <%= link_to "Comments", comments_path %>
+  <%= link_to "Threads" %> 
 </h4>
-  
+
 <%  @posts.each do |post| %>
     
   <% if post.url.empty? %>
