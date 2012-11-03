@@ -12,16 +12,16 @@ class UpvotesController < ApplicationController
     @upvote.user_id = @user.id
     @upvote.user_ip = @user.last_sign_in_ip
    
-    # Could not find the right regex to remove the quotes from "Comment"
-    if params[:upvotabe_type] == "Comment"
-      @karma_user = Comment.find(@upvote.upvotable_id).user
+    # Could not find the right regex to remove the quotes from "Post"
+    if @upvote.upvotable_type == "Post"
+      @karma_user = Post.find(@upvote.upvotable_id).user
     else
-      @karma_user = Post.find(params[:upvotable_id]).user
+      @karma_user = Comment.find(@upvote.upvotable_id).user
     end
 
     @upvote.save
     @karma_user.karma += 1
-    @karma_user.save
+    @karma_user.update_attribute :karma, @karma_user.karma
 
     respond_to do |format|
       if @upvote.save

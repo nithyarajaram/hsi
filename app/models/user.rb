@@ -13,11 +13,12 @@ class User < ActiveRecord::Base
   has_many :upvotes
 
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i, :allow_blank => true, :message=>"Please enter a valid email id" 
-  validates_presence_of :username
-  validates_uniqueness_of :username 
+ # validates_presence_of :username
+ # validates_uniqueness_of :username 
   validates_presence_of :password
   validates_presence_of :password_confirmation
-  before_create :set_karma
+  
+  #before_create :set_karma
   scope :leader_board, order('karma DESC')
 
   

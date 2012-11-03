@@ -11,11 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-<<<<<<< HEAD
 ActiveRecord::Schema.define(:version => 20121023180951) do
-=======
-ActiveRecord::Schema.define(:version => 20121021022028) do
->>>>>>> user_karma
 
   create_table "comments", :force => true do |t|
     t.text     "comment"
@@ -83,7 +79,7 @@ ActiveRecord::Schema.define(:version => 20121021022028) do
     t.string   "email"
     t.string   "username"
     t.integer  "karma"
-    t.boolean  "admin"             
+    t.boolean  "admin",                  :default => false
   end
 
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
