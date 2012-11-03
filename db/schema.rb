@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121023180951) do
+ActiveRecord::Schema.define(:version => 20121103141713) do
 
   create_table "comments", :force => true do |t|
     t.text     "comment"
@@ -78,7 +78,7 @@ ActiveRecord::Schema.define(:version => 20121023180951) do
     t.string   "name"
     t.string   "email"
     t.string   "username"
-    t.integer  "karma"
+    t.integer  "karma",                  :default => 1
     t.boolean  "admin",                  :default => false
   end
 
