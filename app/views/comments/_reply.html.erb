@@ -5,24 +5,21 @@
 
 <% if defined?(wrap_in) && !wrap_in.blank? %>
   <%= content_tag wrap_in do %>
+    
     <div id = "inner"> 
       <% get_indentation(reply).times do%>&nbsp;<% end %>
-
-      <% if !reply.upvotes.empty? %>
-        <span id = "<%="#{reply.id}"%>">
-          <%= pluralize(reply.upvotes.count, "point") %> | </span>
-      <% end %> 
-
-      <em>Posted<%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.email %> |
-        <%= link_to 'Delete', reply, :method => :delete %></em><br/>
+      <img id="<%= "#{reply.id}" %>" src="/assets/arrow_17.gif"></img>
+        <% if !reply.upvotes.empty? %>
+          <span id = "<%="#{reply.id}"%>points">
+            <%= pluralize(reply.upvotes.count, "point") %> | 
+          </span>
+        <% end %> 
+      <em>Posted<%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.username %> |
+          <%= link_to 'Delete', reply, :method => :delete %></em><br/>
     </div>
     
     <div  id = "inner">
       <% get_indentation(reply).times do%>&nbsp;<%end%>
-      <%= button_to "^", {:action => :create, :controller => :upvotes, 
-                         :method => :post, :upvotable_id => reply.id, 
-                         :upvotable_type => reply.class.to_s, :url => request.url},
-                         :remote => true %>
     </div>
  
     <div  id = "inner">
@@ -35,21 +32,18 @@
       <%= link_to "reply", new_reply_comment_path(reply) %>
     </div>
     <br/>
+  <% end %>
 
-   <% end %>
 <% else %>
   <div id = "outer">
+    <img id="<%= "#{reply.id}" %>" src="/assets/arrow_17.gif" /></img>
     <% if !reply.upvotes.empty? %>
-       <span id = "<%="#{reply.id}"%>">
+       <span id = "<%="#{reply.id}"%>points">
         <%= pluralize(reply.upvotes.count, "point") %> | </span>
-      <% end %> 
-    <em>Posted <%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.email %> |
+    <% end %> 
+    <em>Posted <%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.username %> |
       <%= link_to 'Delete', reply, :method => :delete %></em><br/>
-    <%= button_to "^", {:action => :create, :controller => :upvotes, 
-                       :method => :post, :upvotable_id => reply.id, 
-                       :upvotable_type => reply.class.to_s, :url => request.url},
-                       :remove => true %>
-
+   
     <div id = "outer"><%=reply.comment%></div>
     <div id = "outer"><%= link_to "reply", new_reply_comment_path(reply) %></div>
     <br/>
@@ -59,4 +53,25 @@
 <% if !reply.replies.empty? %>
   <div><%= render :partial => "comments/reply", :collection => reply.replies, :locals => { :wrap_in => :div} %></div>
 <% end %>
+
+<script>
+  $('img#<%= "#{reply.id}"%>').click(function(e){
+    e.preventDefault();
+    $div = $(this).attr('id');
+    $.ajax({
+        context: this,
+        type: "POST",
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        url: "/upvotes",
+        cache: false,
+        data: {upvotable_id: $div, upvotable_type: "Comment"},
+        success: function(json){
+        $('span#'+ $div +'points').text(json + ' points |');
+      }
+    });
+  });
+</script>
+
+
+
  

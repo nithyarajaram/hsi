@@ -30,8 +30,14 @@
     <div>
       <span class = "points" id = "<%= "#{post.id}"%>points"> 
         <%= pluralize(post.upvotes.count, "point") %> | </span>
-       <em>posted <%=time_ago_in_words(post.created_at)%> ago | by <%=post.user.email %> |
-         <%=  link_to "discuss", post_path(post)%></em>
+       <em>posted <%=time_ago_in_words(post.created_at)%> ago | by <%= link_to post.user.username, user_path(post.user) %> |
+         <% if post.comments.empty? %>
+           <%=  link_to "discuss", post_path(post)%>
+         <% else %>
+           <%= link_to "#{post.comments.count} comments", post_path(post) %>
+         <% end %>
+         
+         </em>
      </div>
 
   <% end %>

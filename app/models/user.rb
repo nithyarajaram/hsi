@@ -18,13 +18,9 @@ class User < ActiveRecord::Base
   validates_presence_of :password
   validates_presence_of :password_confirmation
   
-  #before_create :set_karma
   scope :leader_board, order('karma DESC')
 
   
-  def set_karma
-    self.update_attribute :karma, 1
-  end
 
  
 end

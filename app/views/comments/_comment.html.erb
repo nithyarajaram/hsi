@@ -1,21 +1,44 @@
 <div>
+    <img id="<%= "#{comment.id}" %>" src="/assets/arrow_17.gif" /></img>
+
    <% if !comment.upvotes.empty? %>
-     <span id = "<%="#{comment.id}"%>">
+     <span id = "<%="#{comment.id}"%>points">
        
        <%= pluralize(comment.upvotes.count, "point") %> | </span>
    <% end %>
 
-    <em>Posted <%= time_ago_in_words(comment.created_at)%> ago | By <%= comment.user.email %> |
-      <%= link_to 'Delete', comment, :method => :delete %></em>
+    <em>Posted <%= time_ago_in_words(comment.created_at)%> ago | By <%= comment.user.username %> |
+      <%= link_to 'link', new_reply_comment_path(comment)%></em>
   </div> 
 
   <div>
-    <%= button_to "^", {:action => :create, :controller => :upvotes, :method => :post, :upvotable_id => comment.id, :upvotable_type => comment.class.to_s, :url => request.url}, :remote => true %>
-    <%= comment.comment %>
+     <%= comment.comment %>
   </div>
 
   <div>
     <%= link_to "reply", new_reply_comment_path(comment) %>
   </div>
+
+  <script>
+  $('img#<%= "#{comment.id}"%>').click(function(e){
+    e.preventDefault();
+    $div = $(this).attr('id');
+    $.ajax({
+        context: this,
+        type: "POST",
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        url: "/upvotes",
+        cache: false,
+        data: {upvotable_id: $div, upvotable_type: "Comment", url: "/"},
+        success: function(json){
+          $(this).hide();
+          $('span#'+ $div +'points').text(json + ' points |');
+
+      }
+    });
+  });
+</script>
+
+
   
  

@@ -6,9 +6,16 @@ class UpvotesController < ApplicationController
     @upvote = Upvote.new(params[:upvotes])
     @upvote.upvotable_type = params[:upvotable_type]
     @upvote.upvotable_id = params[:upvotable_id]
-    @url = params[:url]
-    @post = Post.find(@upvote.upvotable_id)
+    #@url = params[:url]
     @user = current_user
+
+    if @upvote.upvotable_type == "Post"
+      @resource = Post.find(@upvote.upvotable_id)
+    else 
+      @resource = Comment.find(@upvote.upvotable_id)
+    end
+
+
     @upvote.user_id = @user.id
     @upvote.user_ip = @user.last_sign_in_ip
    
@@ -25,9 +32,9 @@ class UpvotesController < ApplicationController
 
     respond_to do |format|
       if @upvote.save
-        format.json { render :json => @post.upvotes.count }
-      else
-        format.html { render @url }
+        format.json { render :json => @resource.upvotes.count }
+      #else
+       # format.html { render @url }
       end
     end
   end
