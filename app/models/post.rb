@@ -4,6 +4,7 @@ class Post < ActiveRecord::Base
   belongs_to :user
   has_many :comments
   has_many :upvotes, :as => :upvotable
+  has_many :downvotes, :as => :downvotable
 
   before_save :sanitize_url
 
@@ -11,6 +12,12 @@ class Post < ActiveRecord::Base
   validate :url_xor_description
 
   scope :recent_posts, order('created_at DESC')
+
+  before_save :set_points
+
+  def set_points
+    self.points = self.upvotes.count - self.downvotes.count
+  end
 
   private
 

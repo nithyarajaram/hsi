@@ -5,17 +5,18 @@
 
 <% if defined?(wrap_in) && !wrap_in.blank? %>
   <%= content_tag wrap_in do %>
-    
     <div id = "inner"> 
       <% get_indentation(reply).times do%>&nbsp;<% end %>
-      <img id="<%= "#{reply.id}" %>" src="/assets/arrow_17.gif"></img>
-        <% if !reply.upvotes.empty? %>
-          <span id = "<%="#{reply.id}"%>points">
-            <%= pluralize(reply.upvotes.count, "point") %> | 
-          </span>
-        <% end %> 
+      <img id="<%= "#{reply.id}" %>uv" src="/assets/arrow_17.gif"></img>
+      <% if user_signed_in? && current_user.admin? %>
+        <img id="<%= "#{reply.id}"%>" src="/assets/cross.png" /></img>
+      <% end %>
+
+      <span id = "<%="#{reply.id}"%>uvpoints">
+        <%= pluralize(reply.points, "point") %> | 
+      </span>
       <em>Posted<%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.username %> |
-          <%= link_to 'Delete', reply, :method => :delete %></em><br/>
+        <%= link_to 'Delete', reply, :method => :delete %></em><br/>
     </div>
     
     <div  id = "inner">
@@ -36,42 +37,84 @@
 
 <% else %>
   <div id = "outer">
-    <img id="<%= "#{reply.id}" %>" src="/assets/arrow_17.gif" /></img>
-    <% if !reply.upvotes.empty? %>
-       <span id = "<%="#{reply.id}"%>points">
-        <%= pluralize(reply.upvotes.count, "point") %> | </span>
-    <% end %> 
+    <img id="<%= "#{reply.id}" %>uv" src="/assets/arrow_17.gif" /></img>
+    <% if user_signed_in? && current_user.admin? %>
+      <img id="<%= "#{reply.id}"%>" src="/assets/cross.png" /></img>
+    <% end %>
+
+
+    <span id = "<%="#{reply.id}"%>uvpoints">
+      <%= pluralize(reply.points, "point") %> | 
+    </span>
+
     <em>Posted <%= time_ago_in_words(reply.created_at)%> ago | By <%= reply.user.username %> |
       <%= link_to 'Delete', reply, :method => :delete %></em><br/>
    
-    <div id = "outer"><%=reply.comment%></div>
-    <div id = "outer"><%= link_to "reply", new_reply_comment_path(reply) %></div>
-    <br/>
+  <div id = "outer"><%=reply.comment%></div>
+  <div id = "outer"><%= link_to "reply", new_reply_comment_path(reply) %></div>
+  <br/>
+
   </div>
 <% end %>
+
+<% reply.upvotes.each do |u| %>
+  <% if user_signed_in? && current_user.id == u.user_id %>
+    <script>$('img#<%= "#{reply.id}" %>uv').hide();</script>
+  <% end %>
+<% end %>
+
+<% reply.downvotes.each do |u| %>
+  <% if user_signed_in? && current_user.id == u.user_id && current_user.admin? %>
+    <script>$('img#<%= "#{reply.id}" %>').hide();</script>
+  <% end %>
+<% end %>
+
+
 
 <% if !reply.replies.empty? %>
   <div><%= render :partial => "comments/reply", :collection => reply.replies, :locals => { :wrap_in => :div} %></div>
 <% end %>
+
+
+
+
+<script>
+  $('img#<%= "#{reply.id}"%>uv').click(function(e){
+    e.preventDefault();
+    $div = $(this).attr('id');
+    $.ajax({
+      context: this,
+      type: "POST",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: "/upvotes",
+      cache: false,
+      data: {upvotable_id: $div, upvotable_type: "Comment"},
+      success: function(json){
+        $(this).hide();
+        $('span#'+ $div +'uvpoints').text(json + ' points |');
+      }
+    });
+  });
+</script>
 
 <script>
   $('img#<%= "#{reply.id}"%>').click(function(e){
     e.preventDefault();
     $div = $(this).attr('id');
     $.ajax({
-        context: this,
-        type: "POST",
-        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-        url: "/upvotes",
-        cache: false,
-        data: {upvotable_id: $div, upvotable_type: "Comment"},
-        success: function(json){
-        $('span#'+ $div +'points').text(json + ' points |');
+      context: this,
+      type: "POST",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: "/downvote",
+      cache: false,
+      data: {downvotable_id: $div, downvotable_type: "Comment"},
+      success: function(json){
+        $(this).hide();
+        $('span#'+ $div +'uvpoints').text(json + ' points |');
       }
     });
   });
 </script>
-
 
 
  

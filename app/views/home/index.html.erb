@@ -11,24 +11,50 @@
   <% if post.url.empty? %>
 
     <div>
-      <img id="<%= "#{post.id}" %>" src="assets/arrow_17.gif" /></img>
+      <img id="<%= "#{post.id}" %>uv" src="assets/arrow_17.gif" /></img>
+      <% if user_signed_in? && current_user.admin? %>
+        <img id="<%= "#{post.id}"%>" src="assets/cross.png" /></img>
+      <% end %>
       <%= link_to post.title, post_path(post) %>
     </div> 
 
 
   <% else %>
-    
     <div>
-
-      <img id="<%= "#{post.id}" %>" src="assets/arrow_17.gif" /></img>
+      <img id="<%= "#{post.id}" %>uv" src="assets/arrow_17.gif"/></img>
+      <% if user_signed_in? && current_user.admin? %>
+        <img id="<%= "#{post.id}" %>" src="assets/cross.png"/></img>
+      <% end %>
       <%= link_to post.title, "#{post.url}" %>
-         
     </div>
-  
+
   <% end %>
+    
   <% if !post.upvotes.empty? %>
+    <% post.upvotes.each do |u| %>
+      <% if user_signed_in? && current_user.id == u.user_id %>
+        <script>$('img#<%= "#{post.id}" %>uv').hide();</script>
+      <% else %>
+        <script>$('img#<%= "#{post.id}" %>uv').show();</script>
+       <% end %>
+     <% end %>
+   <% end %>
+
+  <% if !post.downvotes.empty? %>
+      <% post.downvotes.each do |u| %>
+      <% if user_signed_in? && current_user.id == u.user_id %>
+        <script>$("img#<%= "#{post.id}" %>").hide();</script>
+      <% else %>
+        <script>$("img#<%= "#{post.id}" %>").show();</script>
+       <% end %>
+     <% end %>
+   <% end %>
+
+
+
+
     <div>
-      <span class = "points" id = "<%= "#{post.id}"%>points"> 
+      <span class = "points" id = "<%= "#{post.id}"%>uvpoints"> 
         <%= pluralize(post.upvotes.count, "point") %> | </span>
        <em>posted <%=time_ago_in_words(post.created_at)%> ago | by <%= link_to post.user.username, user_path(post.user) %> |
          <% if post.comments.empty? %>
@@ -40,17 +66,15 @@
          </em>
      </div>
 
-  <% end %>
  
   <br/>
   <br/>
 
 
 
-<% end %>
 
 <script>
-  $('img').click(function(e){
+  $('img#<%= "#{post.id}"%>uv').click(function(e){
     e.preventDefault();
     $div = $(this).attr('id');
     $.ajax({
@@ -61,6 +85,7 @@
         cache: false,
         data: {upvotable_id: $div, upvotable_type: "Post", url: "/"},
         success: function(json){
+         $(this).hide();  
         $('span#'+ $div +'points').text(json + ' points |');
       }
     });
@@ -68,4 +93,23 @@
 </script>
 
 
+<script>
+  $('img#<%= "#{post.id}"%>').click(function(e){
+    e.preventDefault();
+    $div = $(this).attr('id');
+    $.ajax({
+        context: this,
+        type: "POST",
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        url: "/downvote",
+        cache: false,
+        data: {downvotable_id: $div, downvotable_type: "Post", url: "/"},
+        success: function(json){
+         $(this).hide();  
+        $('span#'+ $div +'uvpoints').text(json + ' points |');
+      }
+    });
+  });
+</script>
 
+  <% end %>

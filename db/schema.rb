@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121103141713) do
+ActiveRecord::Schema.define(:version => 20121109185523) do
 
   create_table "comments", :force => true do |t|
     t.text     "comment"
@@ -20,6 +20,16 @@ ActiveRecord::Schema.define(:version => 20121103141713) do
     t.integer  "in_reply_to"
     t.integer  "user_id"
     t.integer  "post_id"
+    t.integer  "points"
+  end
+
+  create_table "downvotes", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "downvotable_id"
+    t.string   "downvotable_type"
+    t.string   "user_ip"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "karmas", :force => true do |t|
@@ -35,6 +45,7 @@ ActiveRecord::Schema.define(:version => 20121103141713) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.integer  "user_id"
+    t.integer  "points"
   end
 
   create_table "up_vote_counters", :force => true do |t|

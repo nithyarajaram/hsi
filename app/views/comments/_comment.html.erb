@@ -1,39 +1,80 @@
 <div>
-    <img id="<%= "#{comment.id}" %>" src="/assets/arrow_17.gif" /></img>
+    
+  <img id="<%= "#{comment.id}" %>uv" src="/assets/arrow_17.gif" /></img>
+ 
+  <% if user_signed_in? && current_user.admin? %>
+    <img id="<%= "#{comment.id}"%>" src="/assets/cross.png" /></img>
+  <% end %>
 
-   <% if !comment.upvotes.empty? %>
-     <span id = "<%="#{comment.id}"%>points">
-       
-       <%= pluralize(comment.upvotes.count, "point") %> | </span>
-   <% end %>
+  <% if !comment.downvotes.empty? %>
+    <% comment.downvotes.each do |u| %>
+      <% if user_signed_in? && current_user.id == u.user_id && current_user.admin? %>
+        <script>$("img#<%= "#{comment.id}" %>").hide();</script>
+      <% elsif user_signed_in? && current_user.admin?%>
+        <script>$("img#<%= "#{comment.id}" %>").show();</script>
+      <% end %>
+    <% end %>
+  <% end %>
 
-    <em>Posted <%= time_ago_in_words(comment.created_at)%> ago | By <%= comment.user.username %> |
-      <%= link_to 'link', new_reply_comment_path(comment)%></em>
-  </div> 
+  <% if !comment.upvotes.empty? %>
+    <% comment.upvotes.each do |u| %>
+      <% if user_signed_in? && current_user.id == u.user_id %>
+        <script>$('img#<%= "#{comment.id}" %>uv').hide();</script>
+      <% end %>
+     <% end %>
+  <% end %>
 
-  <div>
-     <%= comment.comment %>
-  </div>
+  <span id = "<%="#{comment.id}"%>uvpoints">
+    <%= pluralize(comment.points, "point") %> | 
+  </span>
 
-  <div>
-    <%= link_to "reply", new_reply_comment_path(comment) %>
-  </div>
+ 
+  <em>Posted <%= time_ago_in_words(comment.created_at)%> ago | By <%= comment.user.username %> |
+    <%= link_to 'link', new_reply_comment_path(comment)%></em>
 
-  <script>
+</div> 
+
+<div>
+  <%= comment.comment %>
+</div>
+
+<div>
+  <%= link_to "reply", new_reply_comment_path(comment) %>
+</div>
+
+<script>
   $('img#<%= "#{comment.id}"%>').click(function(e){
     e.preventDefault();
     $div = $(this).attr('id');
     $.ajax({
-        context: this,
-        type: "POST",
-        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-        url: "/upvotes",
-        cache: false,
-        data: {upvotable_id: $div, upvotable_type: "Comment", url: "/"},
-        success: function(json){
+      context: this,
+      type: "POST",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: "/downvote",
+      cache: false,
+      data: {downvotable_id: $div, downvotable_type: "Comment", url: "/"},
+      success: function(json){
+        $(this).hide();  
+        $('span#'+ $div +'uvpoints').text(json + ' points |');
+      }
+    });
+  });
+</script>
+
+<script>
+  $('img#<%= "#{comment.id}"%>uv').click(function(e){
+    e.preventDefault();
+    $div = $(this).attr('id');
+    $.ajax({
+      context: this,
+      type: "POST",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: "/upvotes",
+      cache: false,
+      data: {upvotable_id: $div, upvotable_type: "Comment", url: "/"},
+      success: function(json){
           $(this).hide();
           $('span#'+ $div +'points').text(json + ' points |');
-
       }
     });
   });

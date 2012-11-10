@@ -9,6 +9,8 @@ class Comment < ActiveRecord::Base
 
   has_many :upvotes, :as => :upvotable
 
+  has_many :downvotes, :as => :downvotable
+
   has_many :replies, :class_name => 'Comment',
                      :foreign_key => 'in_reply_to'
   
@@ -18,6 +20,8 @@ class Comment < ActiveRecord::Base
 
   scope :parent_comments, :conditions => {:in_reply_to => nil}
   scope :recent_comments, order('created_at DESC')
+
+  before_save :set_points
 
   validates_presence_of :comment
 
@@ -35,6 +39,11 @@ class Comment < ActiveRecord::Base
       indentation = get_indentation(self.in_reply_to) + 5
     end
   end
+
+    def set_points
+      self.points = self.upvotes.count - self.downvotes.count
+    end
+  
 
 
                               

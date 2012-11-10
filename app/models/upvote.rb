@@ -4,4 +4,6 @@ class Upvote < ActiveRecord::Base
 
   belongs_to :upvotable, :polymorphic => true
 
+  validates_uniqueness_of :user_id, :scope => [:upvotable_id, :upvotable_type]
+
 end

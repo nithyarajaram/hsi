@@ -15,5 +15,6 @@ Hsi::Application.routes.draw do
   end
   
   resources :upvotes
+  resources :downvote
 end
 

@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   has_many :posts, :dependent => :destroy
   has_many :comments, :dependent => :destroy
   has_many :upvotes
+  has_many :downvotes
 
   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i, :allow_blank => true, :message=>"Please enter a valid email id" 
   validates_presence_of :username

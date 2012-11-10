@@ -29,10 +29,11 @@ class UpvotesController < ApplicationController
     @upvote.save
     @karma_user.karma += 1
     @karma_user.update_attribute :karma, @karma_user.karma
+    @resource.save
 
     respond_to do |format|
       if @upvote.save
-        format.json { render :json => @resource.upvotes.count }
+        format.json { render :json => @resource.points }
       #else
        # format.html { render @url }
       end

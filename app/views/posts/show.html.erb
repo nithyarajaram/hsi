@@ -1,9 +1,29 @@
 <div>
+ <img id="<%= "#{@post.id}" %>uvch" src="/assets/arrow_17.gif" style="display:none" /></img>
+    <% if user_signed_in? && current_user.admin? %>
+      <img id="<%= "#{@post.id}dvch" %>" src="/assets/cross.png" /></img>
+    <% end %>
   <%= @post.title %> 
   <%= "(#{@post.url})" unless @post.url.nil? %><br/>
   <%= @post.text unless @post.text.nil? %>
 </div>
 
+<% @post.upvotes.each do |u| %>
+  <% if user_signed_in? && current_user.id == u.user_id %>
+    <script>$('img#<%= "#{@post.id}" %>uvch').hide();</script>
+  <% else %>
+    <script>$('img#<%= "#{@post.id}" %>uvch').show();</script>
+  <% end %>
+<% end %>
+
+<% @post.downvotes.each do |u| %>
+  <% if user_signed_in? && current_user.id == u.user_id %>
+    <script>$('img#<%= "#{@post.id}" %>dvch').hide();</script>
+  <% else %>
+    <script>$('img#<%= "#{@post.id}" %>dvch').show();</script>
+  <% end %>
+<% end %>
+   
 <br/>
 <br/>
 
@@ -30,7 +50,7 @@
         <%= render :partial => 'comments/comment', :object => comment %>
       </div>
       <br/>
-    <% else%>
+    <% else %>
       <div>
         <%= render :partial => 'comments/comment', :object => comment %>
         <%= render :partial => 'comments/reply', :collection=> comment.replies%>
@@ -39,5 +59,41 @@
     <% end %>
   <% end %>
 </div>
+
+<script>
+  $('img#<%= "#{@post.id}" %>uvch').click(function(e){
+    e.preventDefault();
+    $div = $(this).attr('id');
+    $.ajax({
+      context: this,
+      type: "POST",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: "/upvotes",
+      cache: false,
+      data: {upvotable_id: $div, upvotable_type: "Post"},
+      success: function(json){
+        $(this).hide();  
+      }
+    });
+  });
+</script>
+
+<script>
+  $('img#<%= "#{@post.id}" %>dvch').click(function(e){
+    e.preventDefault();
+    $div = $(this).attr('id');
+    $.ajax({
+      context: this,
+      type: "POST",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: "/downvote",
+      cache: false,
+      data: {downvotable_id: $div, downvotable_type: "Post"},
+      success: function(json){
+      $(this).hide();  
+      }
+    });
+  });
+</script>
 
 
