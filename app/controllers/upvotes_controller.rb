@@ -38,7 +38,7 @@ class UpvotesController < ApplicationController
     @karma_user.karma += 1
     @karma_user.update_attribute :karma, @karma_user.karma
     
-      if @karma_user.karma >= 9
+      if @karma_user.karma >= 4
         @karma_user.update_attribute :admin, true 
       else
         @karma_user.update_attribute :admin, false

@@ -23,7 +23,7 @@ class DownvoteController < ApplicationController
     @karma_user.update_attribute :karma, @karma_user.karma
     @resource.save
     
-      if @karma_user.karma <= 9
+      if @karma_user.karma <= 4
         @karma_user.update_attribute :admin, false
       else
         @karma_user.update_attribute :admin, true

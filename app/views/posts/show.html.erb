@@ -10,18 +10,17 @@
     <img id="<%= "#{@post.id}" %>uvch" src="/assets/arrow_17.gif" /></img>
   <% end %>
 
-  <% if user_signed_in? && !(current_user.admin? && (!@post.downvotes.where(:user_id => current_user.id,  :downvotable_id => @post.id).empty?)) %>
+  <% if user_signed_in? && current_user.admin? && (post.downvotes.where(:user_id => current_user.id,  :downvotable_id => post.id).empty?) %>
     <img id="<%= "#{@post.id}"%>dvch" src="/assets/arrow_17.gif"  class="rotated_image" /></img>
   <% end %>
 
- 
 
  <%= @post.title %> 
     <% if !@post.url.empty? %>
       <%= ("#{@post.url}") %><br/>
     <% end %>
     <br/>
-    <%= @post.text unless @post.text.nil? %>
+    <%= @post.text unless @post.text.empty? %>
 
   </div>
    

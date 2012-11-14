@@ -21,7 +21,7 @@
       <img id="<%= "#{post.id}" %>uv" src="assets/arrow_17.gif" /></img>
     <% end %>
 
-    <% if user_signed_in? && !(current_user.admin? && (!post.downvotes.where(:user_id => current_user.id,  :downvotable_id => post.id).empty?)) %>
+    <% if user_signed_in? && current_user.admin? && (post.downvotes.where(:user_id => current_user.id,  :downvotable_id => post.id).empty?) %>
         <img id="<%= "#{post.id}"%>" src="assets/arrow_17.gif"  class="rotated_image" /></img>
     <% end %>
 
