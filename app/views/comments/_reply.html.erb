@@ -7,9 +7,13 @@
   <%= content_tag wrap_in do %>
     <div id = "inner"> 
       <% get_indentation(reply).times do%>&nbsp;<% end %>
-      <img id="<%= "#{reply.id}" %>uv" src="/assets/arrow_17.gif"></img>
-      <% if user_signed_in? && current_user.admin? %>
-        <img id="<%= "#{reply.id}"%>" src="/assets/cross.png" /></img>
+
+      <% if !(user_signed_in? && (!reply.upvotes.where(:user_id => current_user.id,  :upvotable_id => reply.id).empty?)) %>
+        <img id="<%= "#{reply.id}" %>uv" src="/assets/arrow_17.gif" /></img>
+      <% end %>
+
+      <% if user_signed_in? && !(current_user.admin? && (!reply.downvotes.where(:user_id => current_user.id,  :downvotable_id => reply.id).empty?)) %>
+        <img id="<%= "#{reply.id}"%>" src="/assets/arrow_17.gif"  class="rotated_image" /></img>
       <% end %>
 
       <span id = "<%="#{reply.id}"%>uvpoints">
@@ -37,11 +41,13 @@
 
 <% else %>
   <div id = "outer">
-    <img id="<%= "#{reply.id}" %>uv" src="/assets/arrow_17.gif" /></img>
-    <% if user_signed_in? && current_user.admin? %>
-      <img id="<%= "#{reply.id}"%>" src="/assets/cross.png" /></img>
-    <% end %>
+   <% if !(user_signed_in? && (!reply.upvotes.where(:user_id => current_user.id,  :upvotable_id => reply.id).empty?)) %>
+        <img id="<%= "#{reply.id}" %>uv" src="/assets/arrow_17.gif" /></img>
+      <% end %>
 
+      <% if user_signed_in? && !(current_user.admin? && (!reply.downvotes.where(:user_id => current_user.id,  :downvotable_id => reply.id).empty?)) %>
+        <img id="<%= "#{reply.id}"%>" src="/assets/arrow_17.gif"  class="rotated_image" /></img>
+      <% end %>
 
     <span id = "<%="#{reply.id}"%>uvpoints">
       <%= pluralize(reply.points, "point") %> | 
@@ -57,26 +63,10 @@
   </div>
 <% end %>
 
-<% reply.upvotes.each do |u| %>
-  <% if user_signed_in? && current_user.id == u.user_id %>
-    <script>$('img#<%= "#{reply.id}" %>uv').hide();</script>
-  <% end %>
-<% end %>
-
-<% reply.downvotes.each do |u| %>
-  <% if user_signed_in? && current_user.id == u.user_id && current_user.admin? %>
-    <script>$('img#<%= "#{reply.id}" %>').hide();</script>
-  <% end %>
-<% end %>
-
-
 
 <% if !reply.replies.empty? %>
   <div><%= render :partial => "comments/reply", :collection => reply.replies, :locals => { :wrap_in => :div} %></div>
 <% end %>
-
-
-
 
 <script>
   $('img#<%= "#{reply.id}"%>uv').click(function(e){
@@ -91,7 +81,8 @@
       data: {upvotable_id: $div, upvotable_type: "Comment"},
       success: function(json){
         $(this).hide();
-        $('span#'+ $div +'uvpoints').text(json + ' points |');
+        alert(json);
+        $('span#'+ $div +'points').text(json + ' points |');
       }
     });
   });

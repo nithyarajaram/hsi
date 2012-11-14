@@ -1,31 +1,4 @@
-<% @comments.each do |comment| %>
-  
-  <img id="<%= "#{comment.id}" %>" src="assets/arrow_17.gif" /></img>
-  <em>posted <%=time_ago_in_words(comment.created_at)%> ago |  by <%= comment.user %> |
-    <%= link_to 'link', new_reply_comment_path(comment) %> | <%= link_to 'parent' %></em>
-  <div>
-  <%= comment.comment %>
-  </div>
-  </br/>
-<% end %>
 
-<script>
-  $('img').click(function(e){
-    e.preventDefault();
-    $div = $(this).attr('id');
-    $.ajax({
-        context: this,
-        type: "POST",
-        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-        url: "/upvotes",
-        cache: false,
-        data: {upvotable_id: $div, upvotable_type: "Comment", url: "/"},
-        success: function(json){
-        $(this).hide();
-      }
-    });
-  });
-</script>
-
+ <%= render :partial => 'comments/comment', :collection => @comments %>
 
 

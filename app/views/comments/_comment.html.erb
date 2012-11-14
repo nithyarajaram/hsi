@@ -1,35 +1,22 @@
+<style>
+  .rotated_image{
+    -webkit-transform:rotate(180deg);
+  }
+</style>
+
 <div>
-    
-  <img id="<%= "#{comment.id}" %>uv" src="/assets/arrow_17.gif" /></img>
- 
-  <% if user_signed_in? && current_user.admin? %>
-    <img id="<%= "#{comment.id}"%>" src="/assets/cross.png" /></img>
+  
+  <% if !(user_signed_in? && (!comment.upvotes.where(:user_id => current_user.id,  :upvotable_id => comment.id).empty?)) %>
+    <img id="<%= "#{comment.id}" %>uv" src="/assets/arrow_17.gif" /></img>
   <% end %>
 
-  <% if !comment.downvotes.empty? %>
-    <% comment.downvotes.each do |u| %>
-      <% if user_signed_in? && current_user.id == u.user_id && current_user.admin? %>
-        <script>$("img#<%= "#{comment.id}" %>").hide();</script>
-      <% elsif user_signed_in? && current_user.admin?%>
-        <script>$("img#<%= "#{comment.id}" %>").show();</script>
-      <% end %>
-    <% end %>
+  <% if user_signed_in? && !(current_user.admin? && (!comment.downvotes.where(:user_id => current_user.id,  :downvotable_id => comment.id).empty?)) %>
+    <img id="<%= "#{comment.id}"%>" src="/assets/arrow_17.gif"  class="rotated_image" /></img>
   <% end %>
 
-  <% if !comment.upvotes.empty? %>
-    <% comment.upvotes.each do |u| %>
-      <% if user_signed_in? && current_user.id == u.user_id %>
-        <script>$('img#<%= "#{comment.id}" %>uv').hide();</script>
-      <% end %>
-     <% end %>
-  <% end %>
-
-  <span id = "<%="#{comment.id}"%>uvpoints">
-    <%= pluralize(comment.points, "point") %> | 
-  </span>
-
- 
-  <em>Posted <%= time_ago_in_words(comment.created_at)%> ago | By <%= comment.user.username %> |
+  <span class = "points" id = "<%= "#{comment.id}"%>uvpoints"> 
+    <%= pluralize(comment.points, "point") %> | </span>
+    <em>Posted <%= time_ago_in_words(comment.created_at)%> ago | By <%= comment.user.username %> |
     <%= link_to 'link', new_reply_comment_path(comment)%></em>
 
 </div> 
@@ -41,6 +28,8 @@
 <div>
   <%= link_to "reply", new_reply_comment_path(comment) %>
 </div>
+
+</br>
 
 <script>
   $('img#<%= "#{comment.id}"%>').click(function(e){

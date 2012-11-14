@@ -1,28 +1,29 @@
+<style>
+  .rotated_image{
+    -webkit-transform:rotate(180deg);
+  }
+</style>
+
 <div>
- <img id="<%= "#{@post.id}" %>uvch" src="/assets/arrow_17.gif" style="display:none" /></img>
-    <% if user_signed_in? && current_user.admin? %>
-      <img id="<%= "#{@post.id}dvch" %>" src="/assets/cross.png" /></img>
+  
+  <% if !(user_signed_in? && (!@post.upvotes.where(:user_id => current_user.id,  :upvotable_id => @post.id).empty?)) %>
+    <img id="<%= "#{@post.id}" %>uvch" src="/assets/arrow_17.gif" /></img>
+  <% end %>
+
+  <% if user_signed_in? && !(current_user.admin? && (!@post.downvotes.where(:user_id => current_user.id,  :downvotable_id => @post.id).empty?)) %>
+    <img id="<%= "#{@post.id}"%>dvch" src="/assets/arrow_17.gif"  class="rotated_image" /></img>
+  <% end %>
+
+ 
+
+ <%= @post.title %> 
+    <% if !@post.url.empty? %>
+      <%= ("#{@post.url}") %><br/>
     <% end %>
-  <%= @post.title %> 
-  <%= "(#{@post.url})" unless @post.url.nil? %><br/>
-  <%= @post.text unless @post.text.nil? %>
-</div>
+    <br/>
+    <%= @post.text unless @post.text.nil? %>
 
-<% @post.upvotes.each do |u| %>
-  <% if user_signed_in? && current_user.id == u.user_id %>
-    <script>$('img#<%= "#{@post.id}" %>uvch').hide();</script>
-  <% else %>
-    <script>$('img#<%= "#{@post.id}" %>uvch').show();</script>
-  <% end %>
-<% end %>
-
-<% @post.downvotes.each do |u| %>
-  <% if user_signed_in? && current_user.id == u.user_id %>
-    <script>$('img#<%= "#{@post.id}" %>dvch').hide();</script>
-  <% else %>
-    <script>$('img#<%= "#{@post.id}" %>dvch').show();</script>
-  <% end %>
-<% end %>
+  </div>
    
 <br/>
 <br/>

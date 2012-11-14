@@ -1,6 +1,5 @@
 class Comment < ActiveRecord::Base
 
-  
   attr_accessible :comment, :in_reply_to, :post_id, :user_id
 
   belongs_to :user
@@ -16,7 +15,6 @@ class Comment < ActiveRecord::Base
   
   belongs_to :parent_comment, :class_name => 'Comment',
                               :foreign_key => 'in_reply_to'
-                            
 
   scope :parent_comments, :conditions => {:in_reply_to => nil}
   scope :recent_comments, order('created_at DESC')
@@ -29,22 +27,8 @@ class Comment < ActiveRecord::Base
     self.in_reply_to == nil
   end
 
-  def self.get_indentation
-    indentation = 0
-    if self.parent_comment?
-      indentation 
-    elsif Comment.find(self.in_reply_to).parent_comment?	
-      indentation = indentation + 5
-    else
-      indentation = get_indentation(self.in_reply_to) + 5
-    end
+  def set_points
+    self.points = self.upvotes.count - self.downvotes.count
   end
-
-    def set_points
-      self.points = self.upvotes.count - self.downvotes.count
-    end
   
-
-
-                              
 end

@@ -1,3 +1,10 @@
+<style>
+  .rotated_image{
+    -webkit-transform:rotate(180deg);
+  }
+</style>
+
+
 <h4>
   <%= link_to "Submit", new_post_path %>
   <%= link_to "Leaders", users_path %>
@@ -7,109 +14,84 @@
 </h4>
 
 <%  @posts.each do |post| %>
-    
-  <% if post.url.empty? %>
 
-    <div>
+  <div>
+
+    <% if !(user_signed_in? && (!post.upvotes.where(:user_id => current_user.id,  :upvotable_id => post.id).empty?)) %>
       <img id="<%= "#{post.id}" %>uv" src="assets/arrow_17.gif" /></img>
-      <% if user_signed_in? && current_user.admin? %>
-        <img id="<%= "#{post.id}"%>" src="assets/cross.png" /></img>
-      <% end %>
+    <% end %>
+
+    <% if user_signed_in? && !(current_user.admin? && (!post.downvotes.where(:user_id => current_user.id,  :downvotable_id => post.id).empty?)) %>
+        <img id="<%= "#{post.id}"%>" src="assets/arrow_17.gif"  class="rotated_image" /></img>
+    <% end %>
+
+    <% if post.url.empty? %>
       <%= link_to post.title, post_path(post) %>
-    </div> 
-
-
-  <% else %>
-    <div>
-      <img id="<%= "#{post.id}" %>uv" src="assets/arrow_17.gif"/></img>
-      <% if user_signed_in? && current_user.admin? %>
-        <img id="<%= "#{post.id}" %>" src="assets/cross.png"/></img>
-      <% end %>
+    <% else %>
       <%= link_to post.title, "#{post.url}" %>
-    </div>
+      <%= "(#{(post.url).slice(7..-1) })" %><br/>
+    <% end %>
+  
+  </div>
 
-  <% end %>
-    
-  <% if !post.upvotes.empty? %>
-    <% post.upvotes.each do |u| %>
-      <% if user_signed_in? && current_user.id == u.user_id %>
-        <script>$('img#<%= "#{post.id}" %>uv').hide();</script>
-      <% else %>
-        <script>$('img#<%= "#{post.id}" %>uv').show();</script>
-       <% end %>
-     <% end %>
-   <% end %>
+  <div>
 
-  <% if !post.downvotes.empty? %>
-      <% post.downvotes.each do |u| %>
-      <% if user_signed_in? && current_user.id == u.user_id %>
-        <script>$("img#<%= "#{post.id}" %>").hide();</script>
-      <% else %>
-        <script>$("img#<%= "#{post.id}" %>").show();</script>
-       <% end %>
-     <% end %>
-   <% end %>
-
-
-
-
-    <div>
-      <span class = "points" id = "<%= "#{post.id}"%>uvpoints"> 
-        <%= pluralize(post.upvotes.count, "point") %> | </span>
-       <em>posted <%=time_ago_in_words(post.created_at)%> ago | by <%= link_to post.user.username, user_path(post.user) %> |
-         <% if post.comments.empty? %>
-           <%=  link_to "discuss", post_path(post)%>
-         <% else %>
-           <%= link_to "#{post.comments.count} comments", post_path(post) %>
+    <span class = "points" id = "<%= "#{post.id}"%>uvpoints"> 
+      <%= pluralize(post.points, "point") %> | </span>
+      <em>posted <%=time_ago_in_words(post.created_at)%> ago | by <%= link_to post.user.username, user_path(post.user) %> |
+        <% if post.comments.empty? %>
+          <%=  link_to "discuss", post_path(post)%>
+        <% else %>
+          <%= link_to "#{post.comments.count} comments", post_path(post) %>
          <% end %>
-         
          </em>
-     </div>
+       
+  </div>
 
  
   <br/>
   <br/>
-
-
-
-
-<script>
-  $('img#<%= "#{post.id}"%>uv').click(function(e){
-    e.preventDefault();
-    $div = $(this).attr('id');
-    $.ajax({
-        context: this,
-        type: "POST",
-        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-        url: "/upvotes",
-        cache: false,
-        data: {upvotable_id: $div, upvotable_type: "Post", url: "/"},
-        success: function(json){
-         $(this).hide();  
-        $('span#'+ $div +'points').text(json + ' points |');
-      }
-    });
-  });
-</script>
-
 
 <script>
   $('img#<%= "#{post.id}"%>').click(function(e){
     e.preventDefault();
     $div = $(this).attr('id');
     $.ajax({
-        context: this,
-        type: "POST",
-        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-        url: "/downvote",
-        cache: false,
-        data: {downvotable_id: $div, downvotable_type: "Post", url: "/"},
-        success: function(json){
-         $(this).hide();  
+      context: this,
+      type: "POST",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: "/downvote",
+      cache: false,
+      data: {downvotable_id: $div, downvotable_type: "Post", url: "/"},
+      success: function(json){
+        $(this).hide();  
         $('span#'+ $div +'uvpoints').text(json + ' points |');
       }
     });
   });
 </script>
 
-  <% end %>
+<script>
+  $('img#<%= "#{post.id}"%>uv').click(function(e){
+    e.preventDefault();
+    $div = $(this).attr('id');
+    $div1 = $div.substring(0, $div.length-2)
+    $.ajax({
+      context: this,
+      type: "POST",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: "/upvotes",
+      cache: false,
+      data: {upvotable_id: $div1, upvotable_type: "Post", url: "/"},
+      success: function(json){
+        $(this).hide();
+        alert(json);
+          $('span#'+ $div1 +'uvpoints').text(json + ' points |');
+      }
+    });
+  });
+
+</script>
+
+<% end %>
+
