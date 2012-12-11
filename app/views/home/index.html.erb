@@ -14,11 +14,11 @@
 </h4>
 
 <div id = "flash_alert" style="display:none">Flash Alert</div>
-
+<% count = 1 %>
 <%  @posts.each do |post| %>
 
   <div>
-
+    <%= "#{count}."%>
     <% if !(user_signed_in? && (!post.upvotes.where(:user_id => current_user.id,  :upvotable_id => post.id).empty?)) %>
       <img id="<%= "#{post.id}" %>uv" src="assets/arrow_17.gif" /></img>
     <% end %>
@@ -47,8 +47,9 @@
           <%= link_to "#{post.comments.count} comments", post_path(post) %>
          <% end %>
          </em>
-       
-  </div>
+        
+       </div>
+       <% count += 1 %>
 
  
   <br/>
