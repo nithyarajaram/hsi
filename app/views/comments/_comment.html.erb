@@ -10,7 +10,7 @@
     <img id="<%= "#{comment.id}" %>uv" src="/assets/arrow_17.gif" /></img>
   <% end %>
 
-  <% if user_signed_in? && current_user.admin? && (post.downvotes.where(:user_id => current_user.id,  :downvotable_id => post.id).empty?) %>
+  <% if user_signed_in? && current_user.admin? && (comment.downvotes.where(:user_id => current_user.id,  :downvotable_id => comment.id).empty?) %>
     <img id="<%= "#{comment.id}"%>" src="/assets/arrow_17.gif"  class="rotated_image" /></img>
   <% end %>
 
