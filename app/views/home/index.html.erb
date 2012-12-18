@@ -4,7 +4,6 @@
   }
 </style>
 
-
 <h4>
   <%= link_to "Submit", new_post_path %>
   <%= link_to "Leaders", users_path %>
@@ -14,11 +13,13 @@
 </h4>
 
 <div id = "flash_alert" style="display:none">Flash Alert</div>
-<% count = 1 %>
-<%  @posts.each do |post| %>
 
-  <div>
-    <%= "#{count}."%>
+
+    <% @posts.each do |post|%>
+  
+      <div>
+        <%= "#{@count}." %>
+
     <% if !(user_signed_in? && (!post.upvotes.where(:user_id => current_user.id,  :upvotable_id => post.id).empty?)) %>
       <img id="<%= "#{post.id}" %>uv" src="assets/arrow_17.gif" /></img>
     <% end %>
@@ -44,21 +45,25 @@
         <% if post.comments.empty? %>
           <%=  link_to "discuss", post_path(post)%>
         <% else %>
-          <%= link_to "#{post.comments.count} comments", post_path(post) %>
+          <%= link_to "#{pluralize(post.comments.count, 'comment')}", post_path(post) %>
          <% end %>
          </em>
         
        </div>
-       <% count += 1 %>
+       <% @count += 1 %>
 
  
   <br/>
   <br/>
 
-<script>
+
+
+  <script>
+    
   $('img#<%= "#{post.id}"%>').click(function(e){
     e.preventDefault();
     $div = $(this).attr('id');
+    
     $.ajax({
       context: this,
       type: "POST",
@@ -77,9 +82,7 @@
       }
     });
   });
-</script>
 
-<script>
   $('img#<%= "#{post.id}"%>uv').click(function(e){
     e.preventDefault();
     $div = $(this).attr('id');
@@ -102,8 +105,9 @@
         }
     });
   });
-
+  
 </script>
 
 <% end %>
 
+<%= paginate @posts %>

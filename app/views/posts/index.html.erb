@@ -1,3 +1,4 @@
+<% if false %>
 <%  @posts.each do |post| %>
     
   <% if post.url.empty? %>
@@ -52,4 +53,115 @@
     });
   });
 </script>
+
+<%= paginate @posts %>
+<% end %>
+
+
+<% count = 1 %>
+<% @posts.each do |post| %>
+  
+
+  <div>
+    <%= "#{count}."%>
+    <% if !(user_signed_in? && (!post.upvotes.where(:user_id => current_user.id,  :upvotable_id => post.id).empty?)) %>
+      <img id="<%= "#{post.id}" %>uv" src="assets/arrow_17.gif" /></img>
+    <% end %>
+
+    <% if user_signed_in? && current_user.admin? && (post.downvotes.where(:user_id => current_user.id,  :downvotable_id => post.id).empty?) %>
+        <img id="<%= "#{post.id}"%>" src="assets/arrow_17.gif"  class="rotated_image" /></img>
+    <% end %>
+
+    <% if post.url.empty? %>
+      <%= link_to post.title, post_path(post) %>
+    <% else %>
+      <%= link_to post.title, "#{post.url}" %>
+      <%= "(#{(post.url).slice(7..-1) })" %><br/>
+    <% end %>
+  
+  </div>
+
+  <div>
+
+    <span class = "points" id = "<%= "#{post.id}"%>uvpoints"> 
+      <%= pluralize(post.points, "point") %> | </span>
+      <em>posted <%=time_ago_in_words(post.created_at)%> ago | by <%= link_to post.user.username, user_path(post.user) %> |
+        <% if post.comments.empty? %>
+          <%=  link_to "discuss", post_path(post)%>
+        <% else %>
+          <%= link_to "#{pluralize(post.comments.count, 'comment')}", post_path(post) %>
+         <% end %>
+         </em>
+        
+       </div>
+       <% count += 1 %>
+
+ 
+  <br/>
+  <br/>
+
+
+
+  <script>
+    
+  $('img#<%= "#{post.id}"%>').click(function(e){
+    e.preventDefault();
+    $div = $(this).attr('id');
+    
+    $.ajax({
+      context: this,
+      type: "POST",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: "/downvote",
+      cache: false,
+      data: {downvotable_id: $div, downvotable_type: "Post", url: "/"},
+      success: function(json){
+        $(this).hide();  
+        $('span#'+ $div +'uvpoints').text( json + ((json === 1) ? ' point |': ' points |'));
+      },
+
+      error: function(header, status, error){
+        $("div#flash_alert").html("<%= escape_javascript(flash[:notice]) %>");
+        $("div#flash_alert").show(401);
+      }
+    });
+  });
+
+ 
+
+
+</script>
+
+<script>
+
+  $('img#<%= "#{post.id}"%>uv').click(function(e){
+    e.preventDefault();
+    $div = $(this).attr('id');
+    $div1 = $div.substring(0, $div.length-2)
+    $.ajax({
+      context: this,
+      type: "POST",
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: "/upvotes",
+      cache: false,
+      data: {upvotable_id: $div1, upvotable_type: "Post", url: "/"},
+      success: function(json){
+        $(this).hide();
+          $('span#'+ $div1 +'uvpoints').text( json + ((json === 1) ? ' point |': ' points |'));
+        },
+        error: function(response, status, error){
+        $("div#flash_alert").html("<%= escape_javascript(flash[:notice]) %>");
+        $("div#flash_alert").show(response);
+
+        }
+    });
+  });
+  
+
+</script>
+<%end %>
+
+<%= paginate @posts %> 
+
+
 

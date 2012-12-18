@@ -24,3 +24,5 @@ gem "hub", ">= 1.10.2", :require => nil, :group => [:development]
 gem "mocha", :require => false
 gem "shoulda", :group => :test
 gem "acts_as_tree", "~> 1.1.0"
+gem 'kaminari'
+gem 'has_scope'

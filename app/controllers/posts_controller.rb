@@ -1,7 +1,8 @@
 class PostsController < ApplicationController
 
   before_filter :authenticate_user!, :only => [:new, :create]
-  
+  has_scope :current_page, :default => 1
+
   def new
     @post = Post.new
   end
@@ -20,7 +21,7 @@ class PostsController < ApplicationController
   end
 
   def index
-    @posts = Post.recent_posts
+    @posts = Post.order(:created_at).page(params[:page])
   end
 
   def show
