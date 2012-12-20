@@ -45,7 +45,13 @@
       success: function(json){
         $(this).hide();  
         $('span#'+ $div +'uvpoints').text(json + ' points |');
-      }
+      },
+      error: function(response, status, error){
+       if(response.status == 401){
+          window.location.href = "/users/signin";
+          }
+        }
+
     });
   });
 </script>
@@ -64,7 +70,13 @@
       success: function(json){
           $(this).hide();
           $('span#'+ $div +'points').text(json + ' points |');
-      }
+        },
+        error: function(response, status, error){
+       if(response.status == 401){
+          window.location.href = "/users/signin";
+          }
+        }
+
     });
   });
 </script>

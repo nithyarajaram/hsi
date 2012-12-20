@@ -61,8 +61,7 @@
 </div>
 
 <script>
-  $('img#<%= "#{@post.id}" %>uvch').click(function(e){
-    e.preventDefault();
+  $('img#<%= "#{@post.id}" %>uvch').click(function(){
     $div = $(this).attr('id');
     $.ajax({
       context: this,
@@ -73,14 +72,19 @@
       data: {upvotable_id: $div, upvotable_type: "Post"},
       success: function(json){
         $(this).hide();  
-      }
+      },
+       error: function(response, status, error){
+         if(response.status == 401){
+          window.location.href = "/users/signin";
+          }
+        }
+
     });
   });
 </script>
 
 <script>
-  $('img#<%= "#{@post.id}" %>dvch').click(function(e){
-    e.preventDefault();
+  $('img#<%= "#{@post.id}" %>dvch').click(function(){
     $div = $(this).attr('id');
     $.ajax({
       context: this,
@@ -91,7 +95,14 @@
       data: {downvotable_id: $div, downvotable_type: "Post"},
       success: function(json){
       $(this).hide();  
-      }
+    },
+     error: function(response, status, error){
+       if(response.status == 401){
+          alert(response.status);
+          window.location.href = "/users/signin";
+          }
+        }
+
     });
   });
 </script>
